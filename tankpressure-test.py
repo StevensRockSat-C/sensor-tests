@@ -8,5 +8,5 @@ i2c = board.I2C()
 mpr = adafruit_mprls.MPRLS(i2c, psi_min=0, psi_max=25)
 
 while True:
-    print((mpr.pressure,))
     time.sleep(1)
+    print((mpr.pressure,))
