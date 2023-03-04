@@ -64,7 +64,7 @@ void loop() {
   loadvoltage = busvoltage + (shuntvoltage / 1000);
 
   // Draw the values to the screen
-  drawToScreen("sh" + String(shuntvoltage) + "mv,bus" + String(busvoltage) + "v\ncur" + String(current_mA) + "mA " + String(power_mW) + "mW");
+  drawToScreen("sh:" + String(shuntvoltage) + "mV bus:" + String(busvoltage) + "V\ncur:" + String(current_mA) + "mA pow:" + String(power_mW) + "mW\nload:" + String(power_mW) + "mW");
 
   // Read twice a second
   delay(500);
