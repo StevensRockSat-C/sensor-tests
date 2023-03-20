@@ -6,6 +6,7 @@ sudo pip3 install adafruit-circuitpython-tca9548a
 
 import time
 from adafruit_extended_bus import ExtendedI2C as I2C
+import adafruit_tca9548a
 import adafruit_mprls
 
 i2c = I2C(1) # Use i2c bus #1
