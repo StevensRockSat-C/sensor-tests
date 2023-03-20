@@ -23,4 +23,4 @@ print("Time(ms),Pressure 0(hPa),Pressure 1(hpa)")
 
 while True:
     print(str(round(time.time()*1000)) + "," + str(mpr0.pressure)+ "," + str(mpr1.pressure))
-    time.sleep(60)
+    time.sleep(0.5)
