@@ -27,16 +27,15 @@ AscoS_t = ((Valve_AscoS_dat(:,1)-Valve_AscoS_dat(1,1))/1e3)/60;   %This test was
 
 % Zeroing out time and pressure terms
 %   Sets first term to (t, P) = (0, 0)
+Control_t0 = Control_t([10:end]) - Control_t(10);                   %[m]
+Control2_t0 = Control2_t([9:end]) - Control2_t(9);                  %[m]
+Xvalve_t0 = Xvalve_t([48:end]) - Xvalve_t(48);                      %[m]
+AscoS_t0 = AscoS_t([10:end]) - AscoS_t(10);                         %[m]
 
-Control_t0 = Control_t([10:end]) - Control_t(10);
-Control2_t0 = Control2_t([9:end]) - Control2_t(9);
-Xvalve_t0 = Xvalve_t([48:end]) - Xvalve_t(48);
-AscoS_t0 = AscoS_t([10:end]) - AscoS_t(10);
-
-Control_p0 = Control_dat([10:end],2) - Control_dat(10,2);
-Control2_p0 = Control2_dat([9:end],2) - Control2_dat(9,2);
-Xvalve_p0 = Valve_Xvalve_dat([48:end],2) - Valve_Xvalve_dat(48,2);
-AscoS_p0 = Valve_AscoS_dat([10:end],2) - Valve_AscoS_dat(10,2);
+Control_p0 = Control_dat([10:end],2) - Control_dat(10,2);           %[hPa]
+Control2_p0 = Control2_dat([9:end],2) - Control2_dat(9,2);          %[hPa]
+Xvalve_p0 = Valve_Xvalve_dat([48:end],2) - Valve_Xvalve_dat(48,2);  %[hPa]
+AscoS_p0 = Valve_AscoS_dat([10:end],2) - Valve_AscoS_dat(10,2);     %[hPa]
 
 ControlAvg_p0 = (Control_p0(1:460) + Control2_p0)./2;
 
@@ -60,6 +59,10 @@ end
 for i = 2:size(AscoS_p0, 1)
     AscoS_Rate(i-1) = (AscoS_p0(i) - AscoS_p0(i-1))/(AscoS_t0(i) - AscoS_t0(i-1));
 end
+
+%% Leak Rates of Various Success
+% Finding Valve leak rates in cc/min
+Asco_LR_ccmin = LeakRate_sccm_UnitConversion(AscoS_p0, 10, AscoS_t0);   %sccm
 
 %Finding Valve leak rates
 Xvalve_LeakRate = ControlAvg_Rate(1:302) - Xvalve_Rate;
@@ -101,7 +104,7 @@ AscoS_LeakRate = AscoS_Rate(1:459) - ControlAvg_Rate;
 % title('Pressure Change Over Time, Zeroed Data')
 % legend('Control', 'Control2', 'XValve', 'Asco411')
 % hold off
-
+% 
 % figure(4)
 % hold on
 % plot(Control2_t0, ControlAvg_p0, 'Linewidth', 3)
@@ -112,13 +115,13 @@ AscoS_LeakRate = AscoS_Rate(1:459) - ControlAvg_Rate;
 % title('Pressure Change Over Time, Zeroed Data, Averaged Control')
 % legend('Control Average', 'XValve', 'Asco Series S')
 % hold off
+% % 
+% windowSize = 20; 
+% b = (1/windowSize)*ones(1,windowSize);
+% a = 1;
+% Xvalve_filter = filter(b, a, Xvalve_Rate);
+% AscoS_filter = filter(b, a, AscoS_Rate(30:end));
 % 
-windowSize = 20; 
-b = (1/windowSize)*ones(1,windowSize);
-a = 1;
-Xvalve_filter = filter(b, a, Xvalve_Rate);
-AscoS_filter = filter(b, a, AscoS_Rate(30:end));
-
 % figure(5)
 % hold on
 % plot(Xvalve_t0(1:302), smoothdata(Xvalve_Rate))
@@ -133,10 +136,10 @@ AscoS_filter = filter(b, a, AscoS_Rate(30:end));
 % ylabel('Leak Rate, [hPa/min]')
 % title('Valve Leak Rates over Time')
 % legend('Xvalve Raw', 'Asco Series S Raw', 'Xvalve Moving Avg', 'Asco S Moving Avg')
-
-Xvalve_LR_filter = filter(b, a, Xvalve_LeakRate);
-AscoS_LR_filter = filter(b, a, AscoS_LeakRate(30:end));
-
+% 
+% Xvalve_LR_filter = filter(b, a, Xvalve_LeakRate);
+% AscoS_LR_filter = filter(b, a, AscoS_LeakRate(30:end));
+% 
 % figure(6)
 % hold on
 % plot(Xvalve_t0(1:302), smoothdata(Xvalve_LeakRate))
@@ -151,4 +154,28 @@ AscoS_LR_filter = filter(b, a, AscoS_LeakRate(30:end));
 % ylabel('Leak Rate, [hPa/min]')
 % title('Valve Leak Rates over Time')
 % legend('Xvalve Raw', 'Asco Series S Raw', 'Xvalve Moving Avg', 'Asco S Moving Avg')
+
+function Q = LeakRate_sccm_UnitConversion(P, V, t)
+% This function computes the leak rate using the equation
+%   Q = (deltaP * V)/t
+%       V is the volume being leaked from
+%       deltaP is the pressure change of the chamber
+%       Q is the leak rate
+%       t is the time elapsed during measurment
+
+%INPUTS
+%   P: the pressure change, either in vector form or as scalar
+%   V: chamber volume
+%   t: time elapsed, , either in vector form or as scalar
+%OUTPUTS
+%   Q: leakrate
+
+    % Data processing
+    deltaP = abs(P(end) - P(1));
+    deltat = abs(t(end) - t(1));
+    
+    %Computing leak rate
+    Q = (deltaP * V)/(deltat * 1013.25);
+    
+end
 
