@@ -18,10 +18,10 @@ class RTC:
             self.rtcTime = ds3231.datetime
             self.now = round(time.time()*1000)
             self.t0 = self.now - (((self.rtcTime.tm_min * 60) + self.rtcTime.tm_sec + 2) * 1000) # The oscillator should take an average of 2s to start and calibrate, from the datasheet 
-            self.ready = true
+            self.ready = True
         except:
             print("No RTC is on the i2c line?!")
-            self.ready = false
+            self.ready = False
             
     def ready():
         return self.ready
