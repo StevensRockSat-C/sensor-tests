@@ -8,6 +8,8 @@ import adafruit_tca9548a
 import adafruit_mprls
 import RPi.GPIO as GPIO
 
+GPIO.setmode(GPIO.BOARD) # Use the board's physical pin numbers
+
 # SETTINGS
 main_valve = 13
 bleed_valve = 15
