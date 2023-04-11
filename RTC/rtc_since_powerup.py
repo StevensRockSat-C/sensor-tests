@@ -8,11 +8,14 @@ import adafruit_ds3231
 i2c = I2C(1)
 time.sleep(2) # Needed to ensure i2c is properly initialized
 
+print("i2c up, connecting to DS3231")
 ds3231 = adafruit_ds3231.DS3231(i2c)
+print("Connected")
 
 class RTC:
     
     def __init__(self):
+        self.ready = False
         
         try:
             self.rtcTime = ds3231.datetime
@@ -23,13 +26,13 @@ class RTC:
             print("No RTC is on the i2c line?!")
             self.ready = False
             
-    def ready():
+    def ready(self):
         return self.ready
 
-    def getTPlus(): # Get the time since launch in seconds
+    def getTPlus(self): # Get the time since launch in seconds
         return round(time.time()) - round(self.t0 / 1000)
 
-    def getTPlusMS(): # Get the time since launch in milliseconds
+    def getTPlusMS(self): # Get the time since launch in milliseconds
         return round(time.time()*1000) - self.t0
         
 rtc = RTC()
