@@ -60,7 +60,7 @@ def openValves():
     GPIO.output(valve1, GPIO.HIGH)
     GPIO.output(valve2, GPIO.HIGH)
     
-    for i in range(200):
+    for i in range(250):
         printInfo()
 
     GPIO.output(bleed_valve, GPIO.LOW)
@@ -73,4 +73,7 @@ for i in range(20):
 
 openValves()
 
-GPIO.cleanup()
+while True:
+    printInfo()
+
+#GPIO.cleanup()
