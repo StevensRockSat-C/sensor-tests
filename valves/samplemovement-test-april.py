@@ -56,19 +56,25 @@ def sampleFrom(valve):
     printInfo()
     
     # Cycle bleed
+    print(str(round(time.time()*1000)) + " - bleed open")
     GPIO.output(bleed_valve, GPIO.HIGH)
     for i in range(10):
         printInfo()
+    print(str(round(time.time()*1000)) + " - bleed close")
     GPIO.output(bleed_valve, GPIO.LOW)
     
     for i in range(3):
         printInfo()
     
+    print(str(round(time.time()*1000)) + " - main open")
     GPIO.output(main_valve, GPIO.HIGH)
+    print(str(round(time.time()*1000)) + " - BCM " + valve + " open")
     GPIO.output(valve, GPIO.HIGH)
     for i in range(10):
         printInfo()
+    print(str(round(time.time()*1000)) + " - main close")
     GPIO.output(main_valve, GPIO.LOW)
+    print(str(round(time.time()*1000)) + " - BCM " + valve + " close")
     GPIO.output(valve, GPIO.LOW)
     
 for i in range(100):
