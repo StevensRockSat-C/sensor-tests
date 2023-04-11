@@ -52,43 +52,25 @@ def printInfo():
     print(str(round(time.time()*1000)) + "," + str(mpr0.pressure) + "," + str(mpr1.pressure) + "," + str(mpr2.pressure))
     time.sleep(0.1)
     
-def sampleFrom(valve):
-
-    printInfo()
+def openValves():
     
     # Cycle bleed
-    print(str(round(time.time()*1000)) + " - bleed open")
     GPIO.output(bleed_valve, GPIO.HIGH)
-    for i in range(10):
-        printInfo()
-    print(str(round(time.time()*1000)) + " - bleed close")
-    GPIO.output(bleed_valve, GPIO.LOW)
-    
-    for i in range(3):
-        printInfo()
-    
-    print(str(round(time.time()*1000)) + " - main open")
     GPIO.output(main_valve, GPIO.HIGH)
-    print(str(round(time.time()*1000)) + " - BCM " + str(valve) + " open")
-    GPIO.output(valve, GPIO.HIGH)
-    for i in range(10):
-        printInfo()
-    print(str(round(time.time()*1000)) + " - main close")
-    GPIO.output(main_valve, GPIO.LOW)
-    print(str(round(time.time()*1000)) + " - BCM " + str(valve) + " close")
-    GPIO.output(valve, GPIO.LOW)
+    GPIO.output(valve1, GPIO.HIGH)
+    GPIO.output(valve2, GPIO.HIGH)
     
-for i in range(100):
+    for i in range(200):
     printInfo()
 
-sampleFrom(valve1)
+    GPIO.output(bleed_valve, GPIO.LOW)
+    GPIO.output(main_valve, GPIO.LOW)
+    GPIO.output(valve1, GPIO.LOW)
+    GPIO.output(valve2, GPIO.LOW)
 
-for i in range(10):
+for i in range(20):
     printInfo()
 
-sampleFrom(valve2)
-
-for i in range(100):
-    printInfo()
+openValves()
 
 GPIO.cleanup()
