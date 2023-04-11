@@ -8,6 +8,7 @@ import adafruit_tca9548a
 import adafruit_mprls
 import RPi.GPIO as GPIO
 
+GPIO.cleanup()
 GPIO.setmode(GPIO.BOARD) # Use the board's physical pin numbers
 
 # SETTINGS
@@ -65,7 +66,7 @@ def sampleFrom(valve):
     GPIO.output(main_valve, GPIO.LOW)
     GPIO.output(valve, GPIO.LOW)
     
-for i in range(30):
+for i in range(100):
     printInfo()
 
 sampleFrom(valve1)
@@ -75,5 +76,7 @@ for i in range(10):
 
 sampleFrom(valve2)
 
-while True:
+for i in range(100):
     printInfo()
+
+GPIO.cleanup()
