@@ -8,14 +8,19 @@ import adafruit_tca9548a
 import adafruit_mprls
 import RPi.GPIO as GPIO
 
-GPIO.cleanup()
-GPIO.setmode(GPIO.BOARD) # Use the board's physical pin numbers
+GPIO.setmode(GPIO.BCM) # Use the board's physical pin numbers
 
 # SETTINGS
-main_valve = 13
-bleed_valve = 15
-valve1 = 19
-valve2 = 21
+"""
+main_valve = 13 (BOARD) -> 27 (BCM)
+bleed_valve = 15 (BOARD) -> 22 (BCM)
+valve1 = 19 (BOARD) -> 10 (BCM)
+valve2 = 21 (BOARD) -> 9 (BCM)
+"""
+main_valve = 27
+bleed_valve = 22
+valve1 = 10
+valve2 = 9
 
 i2c = I2C(1) # Use i2c bus #1
 time.sleep(2) # Needed to ensure i2c is properly initialized
