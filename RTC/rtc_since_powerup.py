@@ -19,6 +19,7 @@ class RTC:
         
         try:
             self.rtcTime = ds3231.datetime
+            print('The self.rtcTime time is: {}/{}/{} {:02}:{:02}:{:02}'.format(self.rtcTime.tm_mon, self.rtcTime.tm_mday, self.rtcTime.tm_year, self.rtcTime.tm_hour, self.rtcTime.tm_min, self.rtcTime.tm_sec))
             self.now = round(time.time()*1000)
             self.t0 = self.now - (((self.rtcTime.tm_min * 60) + self.rtcTime.tm_sec + 2) * 1000) # The oscillator should take an average of 2s to start and calibrate, from the datasheet 
             self.ready = True
