@@ -39,5 +39,5 @@ rtc = RTC()
 
 while True:
 
-    print("It's been " + rtc.getTPlusMS() + " ms since first power")
+    print("It's been " + str(rtc.getTPlusMS()) + " ms since first power")
     time.sleep(1)
