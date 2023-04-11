@@ -61,7 +61,7 @@ def openValves():
     GPIO.output(valve2, GPIO.HIGH)
     
     for i in range(200):
-    printInfo()
+        printInfo()
 
     GPIO.output(bleed_valve, GPIO.LOW)
     GPIO.output(main_valve, GPIO.LOW)
