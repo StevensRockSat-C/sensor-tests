@@ -58,11 +58,13 @@ print("Time(ms),Pressure 0(hPa),Pressure 1(hpa),Pressure 2(hpa),Pressure 3(hpa),
 while True:
     
     oled.fill(0)
+    draw.rectangle((0, 0, oled.width, oled.height), outline=0, fill=0)
+    oled.show()
 
-    draw.text((x, top),       "1: " + str(mpr0.pressure) + "  2: " + str(mpr1.pressure),  font=font, fill=255)
-    draw.text((x, top+8),     "3: " + str(mpr2.pressure) + "  4: " + str(mpr3.pressure), font=font, fill=255)
-    draw.text((x, top+16),    "5: " + str(mpr4.pressure),  font=font, fill=255)
-    draw.text((x, top+16),    "t: " + str(round(time.time()*1000)) + " s",  font=font, fill=255)
+    draw.text((x, top),       "1: " + str(round(mpr0.pressure, 3)) + " 2: " + str(round(mpr1.pressure, 3)),  font=font, fill=255)
+    draw.text((x, top+8),     "3: " + str(round(mpr2.pressure, 3)) + " 4: " + str(round(mpr3.pressure, 3)), font=font, fill=255)
+    draw.text((x, top+16),    "5: " + str(round(mpr4.pressure, 3)),  font=font, fill=255)
+    draw.text((x, top+24),    "t: " + str(round(time.time()*1000)) + " s",  font=font, fill=255)
 
     # Display image.
     oled.image(image)
