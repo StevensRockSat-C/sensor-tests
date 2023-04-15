@@ -8,7 +8,9 @@ baud_rate = 115200
 PI_ser = serial.Serial(port, baud_rate)
 
 # Send the string "Hello world"
-PI_ser.write(b"Hello world")
+try:
+    PI_ser.write(b"Hello world")
 
-# Close the serial port
-PI_ser.close()
+finally:
+    # Close the serial port
+    PI_ser.close()

@@ -11,11 +11,12 @@ PI_ser = serial.Serial(port, baud_rate)
 while PI_ser.in_waiting == 0:
     pass
 
-# Read the string sent by the sender
-PI_ser = PI_ser.read_until()
+try:
+    # Read the string sent by the sender
+    rec = PI_ser.read_until()
 
-# Print the received string
-print(PI_ser)
-
-# Close the serial port
-PI_ser.close()
+    # Print the received string
+    print(rec)
+finally:
+    # Close the serial port
+    PI_ser.close()
