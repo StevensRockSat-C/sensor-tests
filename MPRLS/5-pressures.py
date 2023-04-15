@@ -29,24 +29,16 @@ mpr4 = adafruit_mprls.MPRLS(multi[4], psi_min=0, psi_max=25)
 oled = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c, addr=0x3C)
 
 
-# Initialize library.
-disp.begin()
-
 # Clear display.
-disp.clear()
-disp.display()
+oled.fill(0)
+oled.show()
 
 # Create blank image for drawing.
 # Make sure to create image with mode '1' for 1-bit color.
-width = disp.width
-height = disp.height
-image = Image.new('1', (width, height))
+image = Image.new("1", (oled.width, oled.height))
 
 # Get drawing object to draw on image.
 draw = ImageDraw.Draw(image)
-
-# Draw a black filled box to clear the image.
-draw.rectangle((0,0,width,height), outline=0, fill=0)
 
 # Draw some shapes.
 # First define some constants to allow easy resizing of shapes.
