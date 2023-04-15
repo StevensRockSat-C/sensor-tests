@@ -44,7 +44,7 @@ draw = ImageDraw.Draw(image)
 # First define some constants to allow easy resizing of shapes.
 padding = -2
 top = padding
-bottom = height-padding
+bottom = oled.height-padding
 # Move left to right keeping track of the current x position for drawing shapes.
 x = 0
 
@@ -57,7 +57,7 @@ print("Time(ms),Pressure 0(hPa),Pressure 1(hpa),Pressure 2(hpa),Pressure 3(hpa),
 
 while True:
     
-    draw.rectangle((0,0,width,height), outline=0, fill=0)
+    oled.fill(0)
 
     draw.text((x, top),       "1: " + str(mpr0.pressure) + "  2: " + str(mpr1.pressure),  font=font, fill=255)
     draw.text((x, top+8),     "3: " + str(mpr2.pressure) + "  4: " + str(mpr3.pressure), font=font, fill=255)
@@ -65,8 +65,8 @@ while True:
     draw.text((x, top+16),    "t: " + str(round(time.time()*1000)) + " s",  font=font, fill=255)
 
     # Display image.
-    disp.image(image)
-    disp.display()
+    oled.image(image)
+    oled.show()
     
     print(str(round(time.time()*1000)) + "," + str(mpr0.pressure) + "," + str(mpr1.pressure) + "," + str(mpr2.pressure) + "," + str(mpr3.pressure) + "," + str(mpr4.pressure))
     time.sleep(0.25)
