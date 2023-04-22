@@ -1,7 +1,7 @@
 import serial
 
 # Set the serial port and baud rate
-port = "/dev/ttyAMA1"
+port = "/dev/ttyTHS1"
 baud_rate = 115200
 
 # Open the serial port
