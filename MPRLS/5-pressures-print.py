@@ -19,7 +19,7 @@ mpr0 = adafruit_mprls.MPRLS(multi[0], psi_min=0, psi_max=25)
 mpr1 = adafruit_mprls.MPRLS(multi[1], psi_min=0, psi_max=25)
 mpr2 = adafruit_mprls.MPRLS(multi[2], psi_min=0, psi_max=25)
 mpr3 = adafruit_mprls.MPRLS(multi[3], psi_min=0, psi_max=25)
-mpr4 = adafruit_mprls.MPRLS(multi[4], psi_min=0, psi_max=25)\
+mpr4 = adafruit_mprls.MPRLS(multi[4], psi_min=0, psi_max=25)
 
 # Setup CSV headers
 print("Time(ms),Pressure 0(hPa),Pressure 1(hpa),Pressure 2(hpa),Pressure 3(hpa),Pressure 4(hpa)")
