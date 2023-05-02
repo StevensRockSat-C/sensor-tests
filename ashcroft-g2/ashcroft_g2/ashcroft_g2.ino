@@ -50,9 +50,11 @@ void setup() {
     drawToScreen("Failed find INA219\n" + String(countTry));
     delay(200);
   }
+
+  Serial.begin(115200);
   
   // We want the highest precision reading
-  currentSensor.setCalibration_16V_400mA();
+  //currentSensor.setCalibration_16V_400mA();
 }
 
 void loop() {
@@ -64,7 +66,8 @@ void loop() {
   loadvoltage = busvoltage + (shuntvoltage / 1000);
 
   // Draw the values to the screen
-  drawToScreen("sh:" + String(shuntvoltage) + "mV bus:" + String(busvoltage) + "V\ncur:" + String(current_mA) + "mA pow:" + String(power_mW) + "mW\nload:" + String(power_mW) + "mW");
+  drawToScreen("sh:" + String(shuntvoltage) + "mV bus:" + String(busvoltage) + "V\ncur:" + String(current_mA) + "mA\npow:" + String(power_mW) + "mW\nload:" + String(loadvoltage) + "V");
+  Serial.println("mA: " + String(current_mA));
 
   // Read twice a second
   delay(500);

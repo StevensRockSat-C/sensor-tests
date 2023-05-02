@@ -22,6 +22,7 @@ main_valve = 27
 bleed_valve = 22
 valve1 = 10
 valve2 = 9
+valve2 = 11
 
 i2c = I2C(1) # Use i2c bus #1
 time.sleep(2) # Needed to ensure i2c is properly initialized
@@ -31,12 +32,14 @@ GPIO.setup(main_valve, GPIO.OUT)
 GPIO.setup(bleed_valve, GPIO.OUT)
 GPIO.setup(valve1, GPIO.OUT)
 GPIO.setup(valve2, GPIO.OUT)
+GPIO.setup(valve3, GPIO.OUT)
 
 # Set all to low
 GPIO.output(main_valve, GPIO.LOW)
 GPIO.output(bleed_valve, GPIO.LOW)
 GPIO.output(valve1, GPIO.LOW)
 GPIO.output(valve2, GPIO.LOW)
+GPIO.output(valve3, GPIO.LOW)
 
 multi = adafruit_tca9548a.TCA9548A(i2c)
 
@@ -59,6 +62,7 @@ def openValves():
     GPIO.output(main_valve, GPIO.HIGH)
     GPIO.output(valve1, GPIO.HIGH)
     GPIO.output(valve2, GPIO.HIGH)
+    GPIO.output(valve3, GPIO.HIGH)
     
     for i in range(250):
         printInfo()
@@ -67,6 +71,7 @@ def openValves():
     GPIO.output(main_valve, GPIO.LOW)
     GPIO.output(valve1, GPIO.LOW)
     GPIO.output(valve2, GPIO.LOW)
+    GPIO.output(valve3, GPIO.LOW)
     
     GPIO.cleanup()
 
