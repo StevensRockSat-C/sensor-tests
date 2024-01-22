@@ -15,9 +15,9 @@ time.sleep(2) # Needed to ensure i2c is properly initialized
 multi = adafruit_tca9548a.TCA9548A(i2c)
 
 # Use the Multiplexer to connect to the different MPRLS
-mpr0 = adafruit_mprls.MPRLS(multi[0], psi_min=0, psi_max=25)
-mpr1 = adafruit_mprls.MPRLS(multi[1], psi_min=0, psi_max=25)
-mpr2 = adafruit_mprls.MPRLS(multi[2], psi_min=0, psi_max=25)
+mpr0 = adafruit_mprls.MPRLS(multi[2], psi_min=0, psi_max=25)
+mpr1 = adafruit_mprls.MPRLS(multi[3], psi_min=0, psi_max=25)
+mpr2 = adafruit_mprls.MPRLS(multi[4], psi_min=0, psi_max=25)
 
 # Setup CSV headers
 print("Time(ms),Pressure 0(hPa),Pressure 1(hpa),Pressure 2(hpa)")

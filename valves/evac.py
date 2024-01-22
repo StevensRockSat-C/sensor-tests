@@ -22,7 +22,7 @@ main_valve = 27
 bleed_valve = 22
 valve1 = 10
 valve2 = 9
-valve2 = 11
+valve3 = 11
 
 i2c = I2C(1) # Use i2c bus #1
 time.sleep(2) # Needed to ensure i2c is properly initialized
@@ -43,42 +43,45 @@ GPIO.output(valve3, GPIO.LOW)
 
 multi = adafruit_tca9548a.TCA9548A(i2c)
 
-# Use the Multiplexer to connect to the different MPRLS
+#Use the Multiplexer to connect to the different MPRLS
 mpr0 = adafruit_mprls.MPRLS(multi[0], psi_min=0, psi_max=25)
 mpr1 = adafruit_mprls.MPRLS(multi[1], psi_min=0, psi_max=25)
 mpr2 = adafruit_mprls.MPRLS(multi[2], psi_min=0, psi_max=25)
+mpr3 = adafruit_mprls.MPRLS(multi[3], psi_min=0, psi_max=25)
+mpr4 = adafruit_mprls.MPRLS(multi[4], psi_min=0, psi_max=25)
+
 
 # Setup CSV headers
-print("Time(ms),Pressure 0(hPa),Pressure 1(hpa),Pressure 2(hpa)")
+print("Time(ms),Pressure 1(hPa),Pressure 2(hpa),Pressure 3(hpa),4")
 
 def printInfo():
-    print(str(round(time.time()*1000)) + "," + str(mpr0.pressure) + "," + str(mpr1.pressure) + "," + str(mpr2.pressure))
+    print(str(round(time.time()*1000)) + "," + str(mpr0.pressure) + "," + str(mpr1.pressure) + "," + str(mpr2.pressure) + "," + str(mpr3.pressure) + "," + str(mpr4.pressure))
     time.sleep(0.1)
     
 def openValves():
     
     # Cycle bleed
-    GPIO.output(bleed_valve, GPIO.HIGH)
+    #GPIO.output(bleed_valve, GPIO.HIGH)
     GPIO.output(main_valve, GPIO.HIGH)
-    GPIO.output(valve1, GPIO.HIGH)
-    GPIO.output(valve2, GPIO.HIGH)
+    #GPIO.output(valve1, GPIO.HIGH)
+    #GPIO.output(valve2, GPIO.HIGH)
     GPIO.output(valve3, GPIO.HIGH)
     
-    for i in range(250):
+    for i in range(300):
         printInfo()
 
-    GPIO.output(bleed_valve, GPIO.LOW)
+    #GPIO.output(bleed_valve, GPIO.LOW)
     GPIO.output(main_valve, GPIO.LOW)
-    GPIO.output(valve1, GPIO.LOW)
-    GPIO.output(valve2, GPIO.LOW)
+    #GPIO.output(valve1, GPIO.LOW)
+    #GPIO.output(valve2, GPIO.LOW)
     GPIO.output(valve3, GPIO.LOW)
     
     GPIO.cleanup()
 
-for i in range(20):
+for i in range(40):
     printInfo()
 
 openValves()
 
-while True:
+for i in range(20):
     printInfo()
