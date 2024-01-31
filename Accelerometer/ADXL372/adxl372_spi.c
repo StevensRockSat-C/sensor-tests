@@ -8,14 +8,16 @@
 
 int spi_fd;
 
+uint8_t spi_mode = MODE;  // Declare a variable for SPI mode
+
 void set_register(uint8_t reg, uint8_t value) {
     uint8_t data[2] = {reg, value};
     struct spi_ioc_transfer transfer = {
         .tx_buf = (unsigned long)data,
         .rx_buf = (unsigned long)NULL,
         .len = sizeof(data),
-        .delay_usecs = 0,
         .speed_hz = SPI_SPEED,
+        .delay_usecs = 0,
         .bits_per_word = BITS_PER_WORD,
         .cs_change = 0,
     };
@@ -33,8 +35,8 @@ int read_register(uint8_t reg) {
         .tx_buf = (unsigned long)data,
         .rx_buf = (unsigned long)data,
         .len = sizeof(data),
-        .delay_usecs = 0,
         .speed_hz = SPI_SPEED,
+        .delay_usecs = 0,
         .bits_per_word = BITS_PER_WORD,
         .cs_change = 0,
     };
@@ -56,7 +58,7 @@ int main() {
     }
 
     // Configure SPI mode, speed, and bits per word
-    if (ioctl(spi_fd, SPI_IOC_WR_MODE, &MODE) < 0) {
+    if (ioctl(spi_fd, SPI_IOC_WR_MODE, &spi_mode) < 0) {
         perror("Error setting SPI mode");
         return EXIT_FAILURE;
     }
