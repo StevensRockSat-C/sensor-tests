@@ -51,6 +51,28 @@ int read_register(uint8_t reg) {
     return data[1];
 }
 
+int16_t read_register_pair(uint8_t reg) {
+    reg |= 0x80; // Set the READ bit to indicate a read operation
+    uint8_t data[3] = {reg, 0, 0};
+    struct spi_ioc_transfer transfer = {
+        .tx_buf = (unsigned long)data,
+        .rx_buf = (unsigned long)data,
+        .len = sizeof(data),
+        .delay_usecs = 0,
+        .speed_hz = SPI_SPEED,
+        .bits_per_word = BITS_PER_WORD,
+        .cs_change = 0,
+    };
+
+    if (ioctl(spi_fd, SPI_IOC_MESSAGE(1), &transfer) < 0) {
+        perror("SPI transfer failed");
+        exit(EXIT_FAILURE);
+    }
+
+    int16_t value = (data[1] << 8) | data[2];
+    return value;
+}
+
 int main() {
     // Open SPI device
     spi_fd = open(SPI_DEVICE, O_RDWR);
@@ -76,16 +98,16 @@ int main() {
     }
 
     // Set ODR to 6.4 kHz and enable low-noise mode
-    set_register(POWER_CTL, 0b00101000); // ODR = 6.4 kHz, Low-Noise Mode
+    // set_register(POWER_CTL, 0b00101000); // ODR = 6.4 kHz, Low-Noise Mode
 
     // Set filter settings (if needed)
     // set_register(FILTER_CTL, ...);
 
     while (1) {
         // Read accelerometer data
-        uint8_t x_data = read_register(X_DATA_REG);
-        uint8_t y_data = read_register(Y_DATA_REG);
-        uint8_t z_data = read_register(Z_DATA_REG);
+        uint8_t x_data = read_register_pair(X_DATA_REG);
+        uint8_t y_data = read_register_pair(Y_DATA_REG);
+        uint8_t z_data = read_register_pair(Z_DATA_REG);
 
         // Combine bytes to get signed 16-bit values
         int16_t x_value = (int16_t)x_data;
