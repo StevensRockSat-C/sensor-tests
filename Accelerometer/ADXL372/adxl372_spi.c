@@ -9,6 +9,8 @@
 int spi_fd;
 
 uint8_t spi_mode = MODE;  // Declare a variable for SPI mode
+uint8_t bits_per_word = BITS_PER_WORD;  // Declare a variable for SPI mode
+uint32_t spi_speed = SPI_SPEED;  // Declare a variable for SPI mode
 
 void set_register(uint8_t reg, uint8_t value) {
     uint8_t data[2] = {reg, value};
@@ -16,9 +18,9 @@ void set_register(uint8_t reg, uint8_t value) {
         .tx_buf = (unsigned long)data,
         .rx_buf = (unsigned long)NULL,
         .len = sizeof(data),
-        .speed_hz = SPI_SPEED,
+        .speed_hz = spi_speed,
         .delay_usecs = 0,
-        .bits_per_word = BITS_PER_WORD,
+        .bits_per_word = bits_per_word,
         .cs_change = 0,
     };
 
@@ -35,9 +37,9 @@ int read_register(uint8_t reg) {
         .tx_buf = (unsigned long)data,
         .rx_buf = (unsigned long)data,
         .len = sizeof(data),
-        .speed_hz = SPI_SPEED,
+        .speed_hz = spi_speed,
         .delay_usecs = 0,
-        .bits_per_word = BITS_PER_WORD,
+        .bits_per_word = bits_per_word,
         .cs_change = 0,
     };
 
@@ -63,12 +65,12 @@ int main() {
         return EXIT_FAILURE;
     }
 
-    if (ioctl(spi_fd, SPI_IOC_WR_BITS_PER_WORD, &BITS_PER_WORD) < 0) {
+    if (ioctl(spi_fd, SPI_IOC_WR_BITS_PER_WORD, &bits_per_word) < 0) {
         perror("Error setting SPI bits per word");
         return EXIT_FAILURE;
     }
 
-    if (ioctl(spi_fd, SPI_IOC_WR_MAX_SPEED_HZ, &SPI_SPEED) < 0) {
+    if (ioctl(spi_fd, SPI_IOC_WR_MAX_SPEED_HZ, &spi_speed) < 0) {
         perror("Error setting SPI speed");
         return EXIT_FAILURE;
     }
