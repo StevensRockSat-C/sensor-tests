@@ -24,13 +24,13 @@ def read_register(register):
     return response[2]
 
 def read_acceleration(axis_reg):
-    low_byte = read_register(axis_reg)
-    high_byte = read_register(axis_reg + 1)
+    low_byte = read_register(axis_reg + 1)
+    high_byte = read_register(axis_reg)
     raw_value = (high_byte << 8) | low_byte
 
     # Convert 14-bit signed value to signed integer
-    if raw_value & 0x2000:
-        raw_value -= 0x4000
+    #if raw_value & 0x2000:
+    #   raw_value -= 0x4000
 
     return raw_value
 
@@ -39,7 +39,9 @@ try:
         x_accel = read_acceleration(X_DATA_REG)
         y_accel = read_acceleration(Y_DATA_REG)
         z_accel = read_acceleration(Z_DATA_REG)
-
+        status = read_register(0x04)
+        
+        print(format(status, 'b'), end = "\t")
         print(f"X-Axis: {x_accel}, Y-Axis: {y_accel}, Z-Axis: {z_accel}")
 
         time.sleep(0.1)  # Adjust sleep time based on your desired sampling rate
