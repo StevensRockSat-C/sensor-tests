@@ -58,8 +58,8 @@ int16_t read_register_pair(uint8_t reg) {
         .tx_buf = (unsigned long)data,
         .rx_buf = (unsigned long)data,
         .len = sizeof(data),
-        .delay_usecs = 0,
         .speed_hz = SPI_SPEED,
+        .delay_usecs = 0,
         .bits_per_word = BITS_PER_WORD,
         .cs_change = 0,
     };
