@@ -69,7 +69,7 @@ int16_t read_register_pair(uint8_t reg) {
         exit(EXIT_FAILURE);
     }
 
-    int16_t value = (data[1] << 8) | data[2];
+    int16_t value = ((int16_t)data[1] << 8) | data[2];
     return value;
 }
 
@@ -103,6 +103,8 @@ int main() {
     // Set filter settings (if needed)
     // set_register(FILTER_CTL, ...);
 
+    printf("X, Y, Z");
+
     while (1) {
         // Read accelerometer data
         uint8_t x_data = read_register_pair(X_DATA_REG);
@@ -115,7 +117,7 @@ int main() {
         int16_t z_value = (int16_t)z_data;
 
         // Print accelerometer data
-        printf("X: %d, Y: %d, Z: %d\n", x_value, y_value, z_value);
+        printf("%d, %d, %d\n", x_value, y_value, z_value);
 
         // Adjust the delay based on your desired effective sampling rate
         usleep(156); // Delay for approximately 6.4 kHz sampling rate

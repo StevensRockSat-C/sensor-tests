@@ -5,6 +5,9 @@
 import spidev
 import time
 
+READ_HZ = 6400.0
+READ_SLEEP = 1.0/READ_HZ
+
 # SPI configuration
 spi = spidev.SpiDev()
 spi.open(0, 0)  # Specify SPI bus and device (0, 0 for default SPI bus on Raspberry Pi)
@@ -34,6 +37,7 @@ def read_acceleration(axis_reg):
 
     return raw_value
 
+print(f"Status Register,X-Axis,Y-Axis,Z-Axis,")
 try:
     while True:
         x_accel = read_acceleration(X_DATA_REG)
@@ -41,10 +45,10 @@ try:
         z_accel = read_acceleration(Z_DATA_REG)
         status = read_register(0x04)
         
-        print(format(status, 'b'), end = "\t")
-        print(f"X-Axis: {x_accel}, Y-Axis: {y_accel}, Z-Axis: {z_accel}")
+        print(format(status, 'b'), end = ",")
+        print(f"{x_accel},{y_accel},{z_accel},")
 
-        time.sleep(0.1)  # Adjust sleep time based on your desired sampling rate
+        time.sleep(READ_SLEEP)  # Adjust sleep time based on your desired sampling rate
 
 except KeyboardInterrupt:
     spi.close()

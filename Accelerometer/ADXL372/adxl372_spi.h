@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 #define SPI_DEVICE "/dev/spidev0.0"
-#define SPI_SPEED 5000000
+#define SPI_SPEED 614400
 #define MODE 3
 #define BITS_PER_WORD 8
 
