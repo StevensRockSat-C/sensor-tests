@@ -16,8 +16,8 @@ const uint8_t Z_DATA_REG = 0x0C;  // Z-axis data register (12 bits)
 
 int16_t readRegister(SPI_HANDLE spi, uint8_t reg) { 
     
-	uint8_t buf[3] = { WRITE_CMD, reg, 0x00 };	// Example of LCD screen data you may want to send
-	SpiWriteAndRead(spi, &buf[1], &buf[2], 3, false);   // Transfer buffer data to SPI call
+	uint8_t buf[2] = { reg, 0x00 };	// Example of LCD screen data you may want to send
+	SpiWriteAndRead(spi, &buf[0], &buf[1], 3, false);   // Transfer buffer data to SPI call
 
     return buf[2];
 }
