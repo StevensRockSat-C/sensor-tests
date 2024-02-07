@@ -1,4 +1,5 @@
 #include "adxl372_withSPIlib.h"
+#include "accessLibs/spi.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
