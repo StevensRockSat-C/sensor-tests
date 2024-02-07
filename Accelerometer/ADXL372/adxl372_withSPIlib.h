@@ -1,9 +1,8 @@
-#ifndef ADXL372_SPI_H
-#define ADXL372_SPI_H
+#ifndef ADXL372_WITHSPILIB_H
+#define ADXL372_WITHSPILIB_H
 
 #include <stdint.h>
 #include <signal.h>
-#include "accessLibs/spi.h"
 
 #define SPI_DEVICE 0
 #define SPI_SPEED 1000000
@@ -22,4 +21,4 @@ int16_t readRegister(SPI_HANDLE spi, uint8_t reg);
 int16_t readRegisterPair(SPI_HANDLE spi, uint8_t reg);
 void terminate(int sign);
 
-#endif /* ADXL372_SPI_H */
+#endif /* ADXL372_WITHSPILIB_H */
