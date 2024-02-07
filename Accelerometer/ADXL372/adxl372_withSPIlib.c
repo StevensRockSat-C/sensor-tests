@@ -1,5 +1,4 @@
 #include "adxl372_withSPIlib.h"
-#include "accessLibs/spi.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -15,7 +14,7 @@ const uint8_t X_DATA_REG = 0x08;  // X-axis data register (12 bits)
 const uint8_t Y_DATA_REG = 0x0A;  // Y-axis data register (12 bits)
 const uint8_t Z_DATA_REG = 0x0C;  // Z-axis data register (12 bits)
 
-int16_t readRegister(SPI_HANDLE spi, uint8_t reg) { 
+int16_t readRegister(SPI_HANDLE spi, uint8_t reg) {
     
 	uint8_t buf[2] = { reg, 0x00 };	// Example of LCD screen data you may want to send
 	SpiWriteAndRead(spi, &buf[0], &buf[1], 3, false);   // Transfer buffer data to SPI call
@@ -23,7 +22,7 @@ int16_t readRegister(SPI_HANDLE spi, uint8_t reg) {
     return buf[2];
 }
 
-int16_t readRegisterPair(SPI_HANDLE spi, uint8_t reg) { 
+int16_t readRegisterPair(SPI_HANDLE spi, uint8_t reg) {
     
 	uint8_t highRegister = readRegister(spi, reg);
 	uint8_t lowRegister = readRegister(spi, reg+1);

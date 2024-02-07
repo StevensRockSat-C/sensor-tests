@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <signal.h>
+#include "accessLibs/spi.h"
 
 #define SPI_DEVICE 0
 #define SPI_SPEED 1000000
