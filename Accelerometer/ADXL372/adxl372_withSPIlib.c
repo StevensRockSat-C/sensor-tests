@@ -1,6 +1,10 @@
 #include "adxl372_withSPIlib.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
 
-uint8_t spi_mode = MODE;  // Declare a variable for SPI mode
+uint8_t spi_mode = SPI_MODE;  // Declare a variable for SPI mode
 uint8_t bits_per_word = BITS_PER_WORD;  // Declare a variable for SPI mode
 uint32_t spi_speed = SPI_SPEED;  // Declare a variable for SPI mode
 
@@ -68,12 +72,9 @@ int main() {
 		
 		if (terminating) {
 		   SpiClosePort(spi);
-		   exit(1);
+		   break;
 		}
     }
-
-    // Close SPI device
-    close(spi_fd);
-
+	
     return EXIT_SUCCESS;
 }
