@@ -55,9 +55,9 @@ int main() {
 
     while (1) {
         // Read accelerometer data
-        uint8_t x_data = read_register_pair(X_DATA_REG);
-        uint8_t y_data = read_register_pair(Y_DATA_REG);
-        uint8_t z_data = read_register_pair(Z_DATA_REG);
+        uint8_t x_data = readRegisterPair(X_DATA_REG);
+        uint8_t y_data = readRegisterPair(Y_DATA_REG);
+        uint8_t z_data = readRegisterPair(Z_DATA_REG);
 
         // Combine bytes to get signed 16-bit values
         int16_t x_value = (int16_t)x_data;
