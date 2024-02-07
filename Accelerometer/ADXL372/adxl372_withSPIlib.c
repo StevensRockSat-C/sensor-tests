@@ -4,15 +4,15 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-uint8_t spi_mode = SPI_MODE;  // Declare a variable for SPI mode
-uint8_t bits_per_word = BITS_PER_WORD;  // Declare a variable for SPI mode
-uint32_t spi_speed = SPI_SPEED;  // Declare a variable for SPI mode
+const uint8_t spi_mode = SPI_MODE;  // Declare a variable for SPI mode
+const uint8_t bits_per_word = BITS_PER_WORD;  // Declare a variable for SPI mode
+const uint32_t spi_speed = SPI_SPEED;  // Declare a variable for SPI mode
 
 volatile int terminating = 0;
 
-uint8_t X_DATA_REG = 0x08  // X-axis data register (12 bits)
-uint8_t Y_DATA_REG = 0x0A  // Y-axis data register (12 bits)
-uint8_t Z_DATA_REG = 0x0C  // Z-axis data register (12 bits)
+const uint8_t X_DATA_REG = 0x08;  // X-axis data register (12 bits)
+const uint8_t Y_DATA_REG = 0x0A;  // Y-axis data register (12 bits)
+const uint8_t Z_DATA_REG = 0x0C;  // Z-axis data register (12 bits)
 
 int16_t readRegister(SPI_HANDLE spi, uint8_t reg) { 
     
@@ -55,9 +55,9 @@ int main() {
 
     while (1) {
         // Read accelerometer data
-        uint8_t x_data = readRegisterPair(X_DATA_REG);
-        uint8_t y_data = readRegisterPair(Y_DATA_REG);
-        uint8_t z_data = readRegisterPair(Z_DATA_REG);
+        uint8_t x_data = readRegisterPair(spi, X_DATA_REG);
+        uint8_t y_data = readRegisterPair(spi, Y_DATA_REG);
+        uint8_t z_data = readRegisterPair(spi, Z_DATA_REG);
 
         // Combine bytes to get signed 16-bit values
         int16_t x_value = (int16_t)x_data;

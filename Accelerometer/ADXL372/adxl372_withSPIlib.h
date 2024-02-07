@@ -5,10 +5,11 @@
 #include <signal.h>
 #include "accessLibs/spi.h"
 
-#define SPI_DEVICE "/dev/spidev0.0"
+#define SPI_DEVICE 0
 #define SPI_SPEED 1000000
 #define SPI_MODE 3
 #define BITS_PER_WORD 8
+
 /*
 #define POWER_CTL 0x2D
 #define FILTER_CTL 0x2C
