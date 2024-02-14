@@ -3,12 +3,24 @@
 
 #include <stdint.h>
 #include <signal.h>
-#include "accessLibs/spi.h"
+#include "accessLibs/spi.c"
 
 #define SPI_DEVICE 0
-#define SPI_SPEED 1000000
-#define SPI_MODE 3
+#define SPI_SPEED 4000000
+#define SPI_MODE 2
 #define BITS_PER_WORD 8
+
+#define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
+#define BYTE_TO_BINARY(byte)  \
+  ((byte) & 0x80 ? '1' : '0'), \
+  ((byte) & 0x40 ? '1' : '0'), \
+  ((byte) & 0x20 ? '1' : '0'), \
+  ((byte) & 0x10 ? '1' : '0'), \
+  ((byte) & 0x08 ? '1' : '0'), \
+  ((byte) & 0x04 ? '1' : '0'), \
+  ((byte) & 0x02 ? '1' : '0'), \
+  ((byte) & 0x01 ? '1' : '0') 
+
 
 /*
 #define POWER_CTL 0x2D

@@ -10,15 +10,18 @@ const uint32_t spi_speed = SPI_SPEED;  // Declare a variable for SPI mode
 
 volatile int terminating = 0;
 
-const uint8_t X_DATA_REG = 0x08;  // X-axis data register (12 bits)
+const uint8_t X_DATA_REG = 0x09;  // X-axis data register (12 bits)
 const uint8_t Y_DATA_REG = 0x0A;  // Y-axis data register (12 bits)
 const uint8_t Z_DATA_REG = 0x0C;  // Z-axis data register (12 bits)
 
 int16_t readRegister(SPI_HANDLE spi, uint8_t reg) {
     
-	uint8_t buf[2] = { reg, 0x00 };	// Example of LCD screen data you may want to send
-	SpiWriteAndRead(spi, &buf[0], &buf[1], 3, false);   // Transfer buffer data to SPI call
-
+	uint8_t buf[3] = { 0x0A, reg, 0x00 };	// Example of LCD screen data you may want to send
+	SpiWriteAndRead(spi, &buf[0], &buf[0], 3, false);   // Transfer buffer data to SPI call
+    for (int i = 0; i < 4; i++) {
+        printf("%d-", buf[i]);
+    }
+    printf("\t");
     return buf[2];
 }
 
@@ -39,11 +42,13 @@ void terminate(int sign) {
 
 int main() {
     // Initialize SPI 8 bits, 1Mhz, Mode 0, no semaphore locks
+    printf("Init... ");
     SPI_HANDLE spi = SpiOpenPort(SPI_DEVICE, bits_per_word, SPI_SPEED, spi_mode, false);
     if (!spi) {
         perror("Error opening SPI device");
         return EXIT_FAILURE;
     }
+    printf("SPI Opened\n");
 
     // Set ODR to 6.4 kHz and enable low-noise mode
     // set_register(POWER_CTL, 0b00101000); // ODR = 6.4 kHz, Low-Noise Mode
@@ -51,28 +56,32 @@ int main() {
     // Set filter settings (if needed)
     // set_register(FILTER_CTL, ...);
 
-    printf("X, Y, Z");
+    signal(SIGINT, terminate);
+
+    printf("Stat, X, Y, Z,");
 
     while (1) {
         // Read accelerometer data
-        uint8_t x_data = readRegisterPair(spi, X_DATA_REG);
-        uint8_t y_data = readRegisterPair(spi, Y_DATA_REG);
-        uint8_t z_data = readRegisterPair(spi, Z_DATA_REG);
-
-        // Combine bytes to get signed 16-bit values
-        int16_t x_value = (int16_t)x_data;
-        int16_t y_value = (int16_t)y_data;
-        int16_t z_value = (int16_t)z_data;
+        uint16_t x_value = readRegister(spi, X_DATA_REG);
+        uint16_t y_value = readRegisterPair(spi, Y_DATA_REG);
+        uint16_t z_value = readRegisterPair(spi, Z_DATA_REG);
+        uint16_t status_data = readRegister(spi, 0x04);
 
         // Print accelerometer data
+        printf("status_data: "BYTE_TO_BINARY_PATTERN"\t", BYTE_TO_BINARY(status_data));
         printf("%d, %d, %d\n", x_value, y_value, z_value);
 
         // Adjust the delay based on your desired effective sampling rate
         usleep(156); // Delay for approximately 6.4 kHz sampling rate
 		
 		if (terminating) {
-		   SpiClosePort(spi);
-		   break;
+            printf("Closing SPI... ");
+            if (SpiClosePort(spi)) {
+                printf("SPI Closed.");
+            } else {
+                printf("bruh");
+            }
+            break;
 		}
     }
 	
