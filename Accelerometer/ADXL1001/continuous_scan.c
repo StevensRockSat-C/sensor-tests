@@ -18,6 +18,24 @@
 
 *****************************************************************************/
 #include "daqhats_utils.h"
+#include <time.h>
+
+// Function to write data to CSV file
+void write_to_csv(FILE *csv_file, double *data, int num_channels, int samples_read_per_channel) {
+    // Write the data to the CSV file
+    int i;
+    for (i = 0; i < samples_read_per_channel; i++) {
+        int index = i * num_channels;
+        int j;
+        for (j = 0; j < num_channels; j++) {
+            fprintf(csv_file, "%f", data[index + j]);
+            if (j < num_channels - 1) {
+                fprintf(csv_file, ",");
+            }
+        }
+        fprintf(csv_file, "\n");
+    }
+}
 
 int main(void)
 {
@@ -27,10 +45,19 @@ int main(void)
     char display_header[512];
     int i;
     char channel_string[512];
+    char channel_csv_string[512];
     char options_str[512];
     char mode_string[32];
     char range_string[32];
 
+    // Open CSV file for writing
+    time_t rawtime;
+    struct tm *timeinfo;
+    char filename[100];
+    time(&rawtime);
+    timeinfo = localtime(&rawtime);
+    strftime(filename, sizeof(filename), "%Y-%m-%d_%H-%M-%S-ADXL1001.csv", timeinfo);
+    FILE *csv_file = fopen(filename, "w");
 
     // Set the channel mask which is used by the library function
     // mcc128_a_in_scan_start to specify the channels to acquire.
@@ -59,7 +86,7 @@ int main(void)
     // available samples (up to the default buffer size) be returned.
     double timeout = 5.0;
 
-    double scan_rate = 1000.0;
+    double scan_rate = 6400.0;
     double actual_scan_rate = 0.0;
     mcc128_a_in_scan_actual_rate(num_channels, scan_rate, &actual_scan_rate);
 
@@ -93,22 +120,12 @@ int main(void)
     convert_input_mode_to_string(input_mode, mode_string);
     convert_input_range_to_string(input_range, range_string);
 
-    printf("\nMCC 128 continuous scan example\n");
-    printf("    Functions demonstrated:\n");
-    printf("        mcc128_a_in_scan_start\n");
-    printf("        mcc128_a_in_scan_read\n");
-    printf("        mcc128_a_in_scan_stop\n");
-    printf("        mcc128_a_in_mode_write\n");
-    printf("        mcc128_a_in_range_write\n");
-    printf("    Input mode: %s\n", mode_string);
-    printf("    Input range: %s\n", range_string);
-    printf("    Channels: %s\n", channel_string);
-    printf("    Requested scan rate: %-10.2f\n", scan_rate);
-    printf("    Actual scan rate: %-10.2f\n", actual_scan_rate);
-    printf("    Options: %s\n", options_str);
-
-    printf("\nPress ENTER to continue ...\n");
-    scanf("%c", &c);
+    printf("Input mode: %s\n", mode_string);
+    printf("Input range: %s\n", range_string);
+    printf("Channels: %s\n", channel_string);
+    printf("Requested scan rate: %-10.2f\n", scan_rate);
+    printf("Actual scan rate: %-10.2f\n", actual_scan_rate);
+    printf("Options: %s\n", options_str);
 
     // Configure and start the scan.
     // Since the continuous option is being used, the samples_per_channel
@@ -131,10 +148,12 @@ int main(void)
     for (i = 0; i < num_channels; i++)
     {
         sprintf(channel_string, "Channel %d   ", channel_array[i]);
+        sprintf(channel_csv_string, "Channel %d,", channel_array[i]);
         strcat(display_header, channel_string);
     }
     strcat(display_header, "\n");
     printf("%s", display_header);
+    printf(channel_string);
 
     // Continuously update the display value until enter key is pressed
     do
@@ -170,9 +189,11 @@ int main(void)
                 printf("%10.5f V", read_buf[index + i]);
             }
             fflush(stdout);
+
+            write_to_csv(csv_file, read_buf, num_channels, samples_read_per_channel);
         }
 
-        usleep(500000);
+        usleep(50000);
 
     }
     while ((result == RESULT_SUCCESS) &&
