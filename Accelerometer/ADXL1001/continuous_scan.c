@@ -21,7 +21,7 @@
 #include <time.h>
 
 // Function to write data to CSV file
-void write_to_csv(FILE *csv_file, double *data, int num_channels, int samples_read_per_channel) {
+void write_channel_data_to_csv(FILE *csv_file, double *data, int num_channels, int samples_read_per_channel) {
     // Write the data to the CSV file
     int i;
     for (i = 0; i < samples_read_per_channel; i++) {
@@ -37,11 +37,16 @@ void write_to_csv(FILE *csv_file, double *data, int num_channels, int samples_re
     }
 }
 
+// Function to write string to CSV file
+void write_to_csv(FILE *csv_file, char *string) {
+    fprintf(csv_file, string);
+    fprintf(csv_file, "\n");
+}
+
 int main(void)
 {
     int result = RESULT_SUCCESS;
     uint8_t address = 0;
-    char c;
     char display_header[512];
     int i;
     char channel_string[512];
@@ -154,6 +159,7 @@ int main(void)
     strcat(display_header, "\n");
     printf("%s", display_header);
     printf(channel_string);
+    write_to_csv(csv_file, channel_csv_string);
 
     // Continuously update the display value until enter key is pressed
     do
@@ -190,7 +196,7 @@ int main(void)
             }
             fflush(stdout);
 
-            write_to_csv(csv_file, read_buf, num_channels, samples_read_per_channel);
+            write_channel_data_to_csv(csv_file, read_buf, num_channels, samples_read_per_channel);
         }
 
         usleep(50000);
