@@ -5,8 +5,7 @@
 #include <fcntl.h>
 
 const uint8_t spi_mode = SPI_MODE;  // Declare a variable for SPI mode
-const uint8_t bits_per_word = BITS_PER_WORD;  // Declare a variable for SPI mode
-const uint32_t spi_speed = SPI_SPEED;  // Declare a variable for SPI mode
+const uint32_t spi_speed = SPI_SPEED;  // Declare a variable for SPI speed
 
 volatile int terminating = 0;
 
@@ -18,7 +17,7 @@ int16_t readRegister(SPI_HANDLE spi, uint8_t reg) {
     
 	uint8_t buf[2] = { reg, 0x00 };	// Example of LCD screen data you may want to send
 	SpiWriteAndRead(spi, &buf[0], &buf[1], 8, false);   // Transfer buffer data to SPI call
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 3; i++) {
         printf("%d-", buf[i]);
     }
     printf("\t");
