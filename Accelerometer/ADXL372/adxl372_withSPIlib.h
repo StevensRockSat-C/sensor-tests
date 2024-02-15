@@ -6,7 +6,7 @@
 #include "accessLibs/spi.c"
 
 #define SPI_DEVICE 0
-#define SPI_SPEED 4000000
+#define SPI_SPEED 5000000
 #define SPI_MODE 2
 #define BITS_PER_WORD 8
 
@@ -30,7 +30,7 @@
 const uint8_t Z_DATA_REG = 0x0C  // Z-axis data register (12 bits)
 */
 
-int16_t readRegister(SPI_HANDLE spi, uint8_t reg);
+uint16_t readRegister(SPI_HANDLE spi, uint8_t reg);
 int16_t readRegisterPair(SPI_HANDLE spi, uint8_t reg);
 void terminate(int sign);
 

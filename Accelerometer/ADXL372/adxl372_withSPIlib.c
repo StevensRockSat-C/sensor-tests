@@ -6,6 +6,7 @@
 
 const uint8_t spi_mode = SPI_MODE;  // Declare a variable for SPI mode
 const uint32_t spi_speed = SPI_SPEED;  // Declare a variable for SPI speed
+const uint8_t bits_per_word = BITS_PER_WORD; // Declare a variable for bits per word
 
 volatile int terminating = 0;
 
@@ -13,23 +14,27 @@ const uint8_t X_DATA_REG = 0x08;  // X-axis data register (12 bits)
 const uint8_t Y_DATA_REG = 0x0A;  // Y-axis data register (12 bits)
 const uint8_t Z_DATA_REG = 0x0C;  // Z-axis data register (12 bits)
 
-int16_t readRegister(SPI_HANDLE spi, uint8_t reg) {
+uint16_t readRegister(SPI_HANDLE spi, uint8_t reg) {
     
-	uint8_t buf[2] = { reg, 0x00 };	// Example of LCD screen data you may want to send
-	SpiWriteAndRead(spi, &buf[0], &buf[1], 8, false);   // Transfer buffer data to SPI call
+	uint8_t buf[2] = { reg, 0xFF };	// Example of LCD screen data you may want to send
+	if (SpiWriteAndRead(spi, &buf[0], &buf[1], 4, false) < 0) {// Transfer buffer data to SPI call
+        printf("<error w/ %d>", reg);
+    }
     for (int i = 0; i < 3; i++) {
         printf("%d-", buf[i]);
     }
     printf("\t");
+    
     return buf[1];
 }
 
 int16_t readRegisterPair(SPI_HANDLE spi, uint8_t reg) {
     
 	uint8_t highRegister = readRegister(spi, reg);
-	uint8_t lowRegister = readRegister(spi, reg+1);
+    reg = reg+1;
+	uint8_t lowRegister = readRegister(spi, reg);
 
-    int16_t value = ((int16_t)highRegister << 8) | lowRegister;
+    int16_t value = ((int16_t)highRegister << 8) | (lowRegister >> 4);
     return value;
 }
 
@@ -75,10 +80,10 @@ int main() {
 		
 		if (terminating) {
             printf("Closing SPI... ");
-            // if (SpiClosePort(spi)) {
-            //     printf("SPI Closed.");
-		if ((spi->spi_fd).close()){
-			printf("SPI Closed.")
+             if (SpiClosePort(spi)) {
+                 printf("SPI Closed.");
+		//if ((spi->spi_fd).close()){
+		//	printf("SPI Closed.")
             } else {
                 printf("bruh");
             }
