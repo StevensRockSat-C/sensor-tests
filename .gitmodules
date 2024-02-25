@@ -1,6 +1,0 @@
-[submodule "Accelerometer/ADXL372/accessLibs"]
-	path = Accelerometer/ADXL372/accessLibs
-	url = https://github.com/LdB-ECM/linux_device_access.git
-[submodule "daqhats"]
-	path = daqhats
-	url = https://github.com/mccdaq/daqhats.git
