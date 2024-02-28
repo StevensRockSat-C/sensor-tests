@@ -24,18 +24,35 @@ class daqhatsWrapper:
         #close 
    
 
-    def _read_buffer(self):
+    def _read_write_data(self):
         total_samples_read = 0
         read_request_size = READ_ALL_AVAILABLE
 
         timeout = 5.0
 
+        input_mode = AnalogInputMode
         while True:
-            read_result = self.hat.a_in_scan_read(read_request_size, timeout)
-            if (read_result.hardware_overrun | read_result.buffer_overrun):
-                self.overrun = True
+            try:
+                read_result = self.hat.a_in_scan_read(read_request_size, timeout)
+                if (read_result.hardware_overrun | read_result.buffer_overrun):
+                    self.overrun = True
+                samples_read_per_channel = int(len(read_result.data)/self.num_channels)
+
+                if samples_read_per_channel >0:
+                    index = samples_read_per_channel * self.num_channels - self.num_channels
+
+                    for i in range(self.num_channels):
+                        csv_string += '{:.5f},'.format(read_result.data[index+i])
+                        print('{:1-.5f}'.format(read_result.data[index+i]),end='')
+                    stdout.flush()
+                sleep(0.1)
+            except KeyboardInterrupt:
+                print(csv_string)
+                exit()
+        
             
     #        a_in_scan_cleanup()
 
 
 daq = daqhatsWrapper([1,2,3])
+daq.read_write_data()
