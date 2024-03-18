@@ -2,7 +2,7 @@ from daqhats import mcc128, OptionFlags, HatIDs, HatError, AnalogInputMode, \
     AnalogInputRange
 from daqhats_utils import select_hat_device, enum_mask_to_string, \
     chan_list_to_mask, input_mode_to_string, input_range_to_string
-from time import sleep
+from time import sleep, time
 from sys import stdout
 from multiprint import MultiPrinter
 
@@ -27,6 +27,22 @@ class daqhatsWrapper:
 
    
 
+    def timeMS():
+        """
+        Returns system time to MS
+        """
+        return round(time.time()*1000)
+
+    def write_data_to_csv(data, num_channels):
+        count=0
+        while (len(data) > count):
+            data_csv = []
+            data_csv+=[str(timeMS())]
+            for i in range(num_channels):
+                count++
+                data_csv+=["," + str(data[count])]
+            mprint.p(data_csv)
+
     def read_write_data(self, output_log):
         READ_ALL_AVAILABLE = -1
         samples_per_channel = 0
@@ -38,28 +54,29 @@ class daqhatsWrapper:
         mprint = MultiPrinter()
         timeout = 5.0
         input_mode = AnalogInputMode
-        
-        
+         
         actual_sampling_rate = self.hat.a_in_scan_actual_rate(self.num_channels, self.sample_rate)
         #2nd arg = sample_rate_per_channel (float): The desired per-channel rate of the
         #internal sampling clock, max 100,000.0.
-        
-            
+
         while True:
             try:
                 read_result = self.hat.a_in_scan_read(read_request_size, timeout)
                 
                 if (read_result.hardware_overrun | read_result.buffer_overrun):
                     self.overrun = True
-                    
-                mprint.p(",".join(map(lambda n: '{:.5f}'.format(n), read_result.data)), output_log) #joins all of 
+                 
+                #mprint.p(",".join(map(lambda n: '{:.5f}'.format(n), read_result.data)), output_log) #joins all of 
                 #data together with , and appends to file
                 #read_result.data clears every time you read it so you are getting the new data each time
+                
+                write_data_to_csv(read_result.data, self.num_channels)
+               
                 stdout.flush()
                 sleep(0.1)
             except KeyboardInterrupt:
                 read_result = self.hat.a_in_scan_read(read_request_size, timeout) #get last values
-                mprint.p(",".join(map(lambda n: '{:.5f}'.format(n), read_result.data)), output_log) 
+                write_data_to_csv(read_result.data, self.num_channels) 
                 
                 #closing all files/scans
                 output_log.close()
