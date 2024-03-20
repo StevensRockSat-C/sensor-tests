@@ -1,4 +1,11 @@
-hil:
+name: Run Hardware Tests
+
+on:
+  workflow_dispatch:
+  push:
+  
+jobs:
+  hil:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     steps:
