@@ -1,0 +1,11 @@
+name: HIL
+
+on:
+  workflow_dispatch:
+  
+jobs:
+  hil:
+    runs-on: self-hosted
+    steps:
+      run: |
+        echo "Running on the Pi!!"
