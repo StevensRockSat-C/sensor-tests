@@ -6,29 +6,35 @@ from time import sleep, time
 from sys import stdout
 from multiprint import MultiPrinter
 
+
 def timeUS():
     """
     Returns system time to microseconds
     """
     return time() * 1000000
 
-def write_data_to_csv(data, num_channels, filename):
-    start = time() * 1000
+
+
+def write_data_to_csv(data, num_channels, filename, startTime, debug=False):
+    
     time_per_sample = 156.25 # 1/sampling_rate * (10^6 conversion to microseconds)
     rows=0
     data_csv = ''
-    time_us = timeUS() - (((1.0)*len(data)/num_channels) * time_per_sample) # total samples * time between samples
-    start_time_us = time_us
+    
+    sample_time = startTime - (((1.0)*len(data)/num_channels) * time_per_sample) # total samples * time between samples
+    print(len(data))
+    #start_time_us = sample_time
     while (len(data)/num_channels > rows):
-        data_csv+=str(time_us)
+        data_csv += str(sample_time)
         for i in range(num_channels):
-            data_csv+=("," + str(data[rows*num_channels + i]))
-        data_csv+="\n"
-        rows+=1
-        time_us+= time_per_sample
+            data_csv += ("," + str(data[rows*num_channels + i]))
+        data_csv += "\n"
+        rows += 1
+        sample_time += time_per_sample
+    if (debug and (sample_time != startTime)): raise Exception("NOT CALCULATING MID-SAMPLE TIMES CORRECTLY!")
     mprint.p(data_csv, filename)
-    print(time() * 1000 - start, rows, time_per_sample, start_time_us, time_us)
-
+    #return sample_time
+       
 class daqhatsWrapper:
     """
     Wrap the daqhat library for ease of use
@@ -68,25 +74,28 @@ class daqhatsWrapper:
         actual_sampling_rate = self.hat.a_in_scan_actual_rate(self.num_channels, self.sample_rate)
         #2nd arg = sample_rate_per_channel (float): The desired per-channel rate of the
         #internal sampling clock, max 100,000.0.
-
         while True:
             try:
-                read_result = self.hat.a_in_scan_read(read_request_size, timeout)
+                #ogStart = timeUS()
                 
+                startTime = timeUS()
+                read_result = self.hat.a_in_scan_read(read_request_size, timeout)
+                print(self.hat.a_in_scan_status().samples_available)
+
                 if (read_result.hardware_overrun | read_result.buffer_overrun):
                     self.overrun = True
-                 
+
                 #mprint.p(",".join(map(lambda n: '{:.5f}'.format(n), read_result.data)), output_log) #joins all of 
                 #data together with , and appends to file
                 #read_result.data clears every time you read it so you are getting the new data each time
                 
-                write_data_to_csv(read_result.data, self.num_channels, output_log)
+                startTime=write_data_to_csv(read_result.data, self.num_channels, output_log, startTime, debug=True)
                
                 #stdout.flush()
                 sleep(0.1)
             except KeyboardInterrupt:
                 read_result = self.hat.a_in_scan_read(read_request_size, timeout) #get last values
-                write_data_to_csv(read_result.data, self.num_channels, output_log) 
+                write_data_to_csv(read_result.data, self.num_channels, output_log, timeUS(), debug=True) 
                 
                 #closing all files/scans
                 output_log.close()
@@ -101,6 +110,8 @@ class daqhatsWrapper:
 
 output_log = open("accelerations.csv", 'w') #OVERWRITES OLD FILE
 mprint = MultiPrinter()
+ogStart = timeUS()
+
 
 daq = daqhatsWrapper([1,2,3,4,5,6])
 daq.read_write_data(output_log)
