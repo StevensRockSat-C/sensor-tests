@@ -1,0 +1,5 @@
+Charged all 4 batteries to 21V (4.2V / cell) on Feb 25th
+Profiled battery 1 on Feb 25th
+Profiled battery 3 on Feb 26th
+Profiled battery 2 on Feb 28th
+Profiled battery 4 on Feb 29th after software issue on 28th (recharged 4 to full on 29th)
