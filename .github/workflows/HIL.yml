@@ -7,5 +7,6 @@ jobs:
   hil:
     runs-on: self-hosted
     steps:
+    - name: Print to console
       run: |
         echo "Running on the Pi!!"
