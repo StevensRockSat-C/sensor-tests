@@ -15,19 +15,19 @@ def timeUS():
 
 
 
-def write_data_to_csv(data, num_channels, filename, startTime, debug=False):
+def write_data_to_csv(data, numChannels, filename, startTime, debug=False):
     
     time_per_sample = 156.25 # 1/sampling_rate * (10^6 conversion to microseconds)
     rows=0
     data_csv = ''
     
-    sample_time = startTime - (((1.0)*len(data)/num_channels) * time_per_sample) # total samples * time between samples
+    sample_time = startTime - (((1.0)*len(data)/numChannels) * time_per_sample) # total samples * time between samples
     print(len(data))
     #start_time_us = sample_time
-    while (len(data)/num_channels > rows):
+    while (len(data)/numChannels > rows):
         data_csv += str(sample_time)
-        for i in range(num_channels):
-            data_csv += ("," + str(data[rows*num_channels + i]))
+        for i in range(numChannels):
+            data_csv += ("," + str(data[rows*numChannels + i]))
         data_csv += "\n"
         rows += 1
         sample_time += time_per_sample
@@ -40,13 +40,13 @@ class daqhatsWrapper:
     Wrap the daqhat library for ease of use
     """
     #hat-id for 128 is 326, according to the library reference
-    def __init__ (self, chanList=[1,2,3,4,5,6], hat_id=326, sample_rate=6400): #open port/channel
+    def __init__ (self, chanList=[1,2,3,4,5,6], hat_id=326, sampleRate=6400): #open port/channel
         self.hat_id = hat_id
-        self.sample_rate = 6400 #with 6400 samples, can do 10 kS
+        self.sampleRate = 6400 #with 6400 samples, can do 10 kS
         self.channelList = chan_list_to_mask(chanList)
         self.address = select_hat_device(HatIDs.MCC_128)
         self.hat = mcc128(self.address)
-        self.num_channels = len(chanList)
+        self.numChannels = len(chanList)
         
         #FOR TESTING
         self.overrun = False
@@ -66,13 +66,13 @@ class daqhatsWrapper:
         
         self.hat.a_in_mode_write(AnalogInputMode.SE)
         self.hat.a_in_range_write(AnalogInputRange.BIP_10V) #change from 10v later?
-        self.hat.a_in_scan_start(self.channelList, samples_per_channel, self.sample_rate, OptionFlags.CONTINUOUS)
+        self.hat.a_in_scan_start(self.channelList, samples_per_channel, self.sampleRate, OptionFlags.CONTINUOUS)
         #mprint = MultiPrinter()
         timeout = 0     # Use 0 timeout to immediately read the buffer's contents, instead of waiting for it to fill.
         input_mode = AnalogInputMode
          
-        actual_sampling_rate = self.hat.a_in_scan_actual_rate(self.num_channels, self.sample_rate)
-        #2nd arg = sample_rate_per_channel (float): The desired per-channel rate of the
+        actual_sampling_rate = self.hat.a_in_scan_actual_rate(self.numChannels, self.sampleRate)
+        #2nd arg = sampleRate_per_channel (float): The desired per-channel rate of the
         #internal sampling clock, max 100,000.0.
         while True:
             try:
@@ -89,13 +89,13 @@ class daqhatsWrapper:
                 #data together with , and appends to file
                 #read_result.data clears every time you read it so you are getting the new data each time
                 
-                startTime=write_data_to_csv(read_result.data, self.num_channels, output_log, startTime, debug=True)
+                startTime=write_data_to_csv(read_result.data, self.numChannels, output_log, startTime, debug=True)
                
                 #stdout.flush()
                 sleep(0.1)
             except KeyboardInterrupt:
                 read_result = self.hat.a_in_scan_read(read_request_size, timeout) #get last values
-                write_data_to_csv(read_result.data, self.num_channels, output_log, timeUS(), debug=True) 
+                write_data_to_csv(read_result.data, self.numChannels, output_log, timeUS(), debug=True) 
                 
                 #closing all files/scans
                 output_log.close()
