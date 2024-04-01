@@ -24,6 +24,12 @@ jobs:
         git push -f -u ci hil-run
         sleep 5
     
+    - name: Get commit details
+      id: commit_details
+      run: |
+        COMMIT_MSG=$(git show -s --format=%s)
+        echo "::set-output name=commit_message::$COMMIT_MSG"
+        
     - name: Trigger and wait for HIL workflow
       uses: aurelien-baudet/workflow-dispatch@v2.1.1
       with:
@@ -33,4 +39,4 @@ jobs:
         token: ${{ secrets.PRIVATE_CI_PERSONAL_ACCESS_TOKEN }}
         wait-for-completion: true
         workflow-logs: print
-        inputs: '{"title": "$(git rev-parse --short "$GITHUB_SHA") Commit: ${{git show -s --format=%s}}; ${github.event.commits[0].author.name}"}'
+        inputs: '{"title": "$(git rev-parse --short "$GITHUB_SHA") Commit: ${{ steps.commit_details.outputs.commit_message }}; ${github.event.commits[0].author.name}"}'
