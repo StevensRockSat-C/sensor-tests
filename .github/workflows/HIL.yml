@@ -2,7 +2,12 @@ name: HIL
 
 on:
   workflow_dispatch:
+    inputs:
+      title:
+        required: true
   
+run-name: ${{ github.event.inputs.title }}
+
 jobs:
   hil:
     runs-on: self-hosted
