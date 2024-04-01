@@ -27,6 +27,7 @@ jobs:
       run: |
         python3 -m pytest
         
-    - name: Set job status
-      if: always()
-      run: exit $(python3 -m pytest --failed -q | wc -l)
+    - name: Count failures and exit
+      run: |
+        fail_count=$(python3 -m pytest --last-failed -q | wc -l)
+        exit $fail_count
