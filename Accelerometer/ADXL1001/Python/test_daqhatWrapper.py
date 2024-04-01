@@ -1,9 +1,9 @@
 import pytest
-import daqHatWrapper
+from daqHatWrapper import daqhatsWrapper
 
 @pytest.fixture
 def wrapper():
-    return daqHatWrapper.daqhatsWrapper()
+    return daqhatsWrapper()
 
 def test_wrapper_init(wrapper):
     assert wrapper.numChannels == 6

@@ -112,6 +112,6 @@ output_log = open("accelerations.csv", 'w') #OVERWRITES OLD FILE
 mprint = MultiPrinter()
 ogStart = timeUS()
 
-
-daq = daqhatsWrapper([1,2,3,4,5,6])
-daq.read_write_data(output_log)
+# RUNNING MANUALLY
+#daq = daqhatsWrapper([1,2,3,4,5,6])
+#daq.read_write_data(output_log)
