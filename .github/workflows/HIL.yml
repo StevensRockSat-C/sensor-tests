@@ -10,3 +10,18 @@ jobs:
     - name: Print to console
       run: |
         echo "Running on the Pi!!"
+        
+    - name: Checkout repository
+      uses: actions/checkout@v4
+       
+    - name: Install pytest
+      run: |
+        pip3 install -U pytest
+        
+    - name: Run pytest
+      run: |
+        pytest
+        
+    - name: Set job status
+      if: always()
+      run: exit $(pytest --failed -q | wc -l)

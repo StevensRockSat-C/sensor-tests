@@ -23,6 +23,7 @@ jobs:
         git remote add ci git@github.com:StevensRockSat-C/RPi-Test-Runner.git
         git push -f -u ci hil-run
         sleep 5
+    
     - name: Trigger and wait for HIL workflow
       uses: aurelien-baudet/workflow-dispatch@v2.1.1
       with:
@@ -32,3 +33,4 @@ jobs:
         token: ${{ secrets.PRIVATE_CI_PERSONAL_ACCESS_TOKEN }}
         wait-for-completion: true
         workflow-logs: print
+        inputs: '{"title": "$(git rev-parse --short "$GITHUB_SHA") Commit: ${{git show -s --format=%s}}; ${github.event.commits[0].author.name}"}'
