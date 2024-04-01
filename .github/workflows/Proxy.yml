@@ -39,4 +39,4 @@ jobs:
         token: ${{ secrets.PRIVATE_CI_PERSONAL_ACCESS_TOKEN }}
         wait-for-completion: true
         workflow-logs: print
-        inputs: '{"title": "$(git rev-parse --short "$GITHUB_SHA") Commit: ${{ steps.commit_details.outputs.commit_message }}; ${github.event.commits[0].author.name}"}'
+        inputs: '{"title": "${{ github.sha }} Commit: ${{ steps.commit_details.outputs.commit_message }}; ${{ github.event.commits[0].author.name }}"}'
