@@ -31,7 +31,7 @@ jobs:
         echo "::set-output name=commit_message::$COMMIT_MSG"
         
     - name: Trigger and wait for HIL workflow
-      uses: aurelien-baudet/workflow-dispatch@v2.1.1
+      uses: ALEEF02/workflow-dispatch@v3.0.0
       with:
         workflow: HIL.yml
         ref: hil-run
