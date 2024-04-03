@@ -4,7 +4,7 @@ clear, clc, close all
 SAMPLE_RATE = 6400;
 
 %% Get data from CSV
-vibData = readmatrix('2024-02-14_12-35-51-ADXL1001-6400Hz-NotHeld-ACpower.csv');
+vibData = readmatrix('../Test Data/2024-02-14_12-35-51-ADXL1001-6400Hz-NotHeld-ACpower.csv');
     % 2024-02-15_17-34-21-ADXL1001-6400Hz-NotHeld-ACpower-DampenerMount.csv
     % 2024-02-14_12-35-51-ADXL1001-6400Hz-NotHeld-ACpower.csv
 xData = vibData(:, 1);
