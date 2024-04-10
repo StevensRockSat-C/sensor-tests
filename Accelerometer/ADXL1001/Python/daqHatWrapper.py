@@ -67,7 +67,7 @@ class daqhatsWrapper:
         data_csv = ''
         while (len(data)/numChannels > rows):
             for i in range(numChannels):
-                data_csv += ("," + str(data[rows*numChannels + i]))
+                data_csv += (str(data[rows*numChannels + i]) + ",")
             data_csv += "\n"
             rows += 1
         self.mprint.p(data_csv, self.outputLog)
