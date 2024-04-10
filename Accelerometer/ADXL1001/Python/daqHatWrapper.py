@@ -121,5 +121,5 @@ class daqhatsWrapper:
         
 #initialize multiprinter as mprint
 mprint = MultiPrinter()
-daq = daqhatsWrapper(mprint, debu=True)
+daq = daqhatsWrapper(mprint, debug=True)
 daq.read_write_data()
