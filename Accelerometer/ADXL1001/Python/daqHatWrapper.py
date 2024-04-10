@@ -43,7 +43,7 @@ class daqhatsWrapper:
         saves data to file given with timestamps in leftmost column 
         using multiprint
     """
-    def write_data_to_csv(self, data, numChannels, filename, startTime):
+    def write_data_to_csv(self, data, numChannels, startTime):
         time_per_sample = 156.25 # 1/sampling_rate * (10^6 conversion to microseconds)
         rows=0
         data_csv = ''
@@ -57,12 +57,12 @@ class daqhatsWrapper:
             rows += 1
             sample_time += time_per_sample
         if (self.debug and (sample_time != startTime)): raise Exception("NOT CALCULATING MID-SAMPLE TIMES CORRECTLY!")
-        self.mprint.p(data_csv, filename)
+        self.mprint.p(data_csv, self.filename)
     
     """
     Same as write_data_to_csv, but without timestamps
     """
-    def write_data_to_csv_no_times(self, data, numChannels, filename):
+    def write_data_to_csv_no_times(self, data, numChannels):
         rows=0
         data_csv = ''
         while (len(data)/numChannels > rows):
@@ -70,7 +70,7 @@ class daqhatsWrapper:
                 data_csv += ("," + str(data[rows*numChannels + i]))
             data_csv += "\n"
             rows += 1
-        self.mprint.p(data_csv, filename)
+        self.mprint.p(data_csv, self.filename)
     
     """
     Continuously records data from accelerometers to buffer, then calls write_data_to_csv to save data to csv
@@ -105,12 +105,12 @@ class daqhatsWrapper:
                 #assign buffer values to sampleData then clear buffer
                 sampleData = self.hat.a_in_scan_read(read_request_size, timeout)
                 
-                self.write_data_to_csv(sampleData.data, self.numChannels, self.filename, startTime)
+                self.write_data_to_csv_no_times(sampleData.data, self.numChannels, startTime)
                 sleep(0.1)
             except KeyboardInterrupt:
                 sampleStartTime = timeUS()
                 sampleData= self.hat.a_in_scan_read(read_request_size, timeout) #get last values
-                self.write_data_to_csv(sampleData.data, self.numChannels, self.filename, sampleStartTime) 
+                self.write_data_to_csv_no_times(sampleData.data, self.numChannels, sampleStartTime) 
                 
                 #closing all files/scans
                 outputLog.close()
