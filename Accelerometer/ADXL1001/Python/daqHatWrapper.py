@@ -22,7 +22,7 @@ def write_data_to_csv(data, numChannels, filename, startTime, debug=False):
     data_csv = ''
     
     sample_time = startTime - (((1.0)*len(data)/numChannels) * time_per_sample) # total samples * time between samples
-    print(len(data))
+    #print(len(data))
     #start_time_us = sample_time
     while (len(data)/numChannels > rows):
         data_csv += str(sample_time)
@@ -80,7 +80,7 @@ class daqhatsWrapper:
                 
                 startTime = timeUS()
                 read_result = self.hat.a_in_scan_read(read_request_size, timeout)
-                print(self.hat.a_in_scan_status().samples_available)
+                #print(self.hat.a_in_scan_status().samples_available)
 
                 if (read_result.hardware_overrun | read_result.buffer_overrun):
                     self.overrun = True
@@ -108,6 +108,7 @@ class daqhatsWrapper:
             
     #        a_in_scan_cleanup()
 
+filePath = "~/Documents/sensor-tests/Accelerometer/ADXL1001/'Test Data'/"
 output_log = open("accelerations.csv", 'w') #OVERWRITES OLD FILE
 mprint = MultiPrinter()
 ogStart = timeUS()
@@ -115,3 +116,4 @@ ogStart = timeUS()
 
 daq = daqhatsWrapper([1,2,3,4,5,6])
 daq.read_write_data(output_log)
+output_log.close()
