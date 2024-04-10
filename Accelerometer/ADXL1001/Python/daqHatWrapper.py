@@ -70,6 +70,7 @@ class daqhatsWrapper:
                 data_csv += (str(data[rows*numChannels + i]) + ",")
             data_csv += "\n"
             rows += 1
+        data_csv = data_csv.removesuffix("\n")
         self.mprint.p(data_csv, self.outputLog)
     
     """
