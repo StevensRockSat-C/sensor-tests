@@ -105,12 +105,14 @@ class daqhatsWrapper:
                 #assign buffer values to sampleData then clear buffer
                 sampleData = self.hat.a_in_scan_read(read_request_size, timeout)
                 
-                self.write_data_to_csv_no_times(sampleData.data, self.numChannels, startTime)
+                #self.write_data_to_csv(sampleData.data, self.numChannels, startTime)
+                self.write_data_to_csv_no_times(sampleData.data, self.numChannels)
                 sleep(0.1)
             except KeyboardInterrupt:
                 sampleStartTime = timeUS()
                 sampleData= self.hat.a_in_scan_read(read_request_size, timeout) #get last values
-                self.write_data_to_csv_no_times(sampleData.data, self.numChannels, sampleStartTime) 
+                #self.write_data_to_csv(sampleData.data, self.numChannels, sampleStartTime)
+                self.write_data_to_csv_no_times(sampleData.data, self.numChannels)
                 
                 #closing all files/scans
                 outputLog.close()
