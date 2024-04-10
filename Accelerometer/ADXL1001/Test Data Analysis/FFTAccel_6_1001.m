@@ -4,11 +4,20 @@ clear, clc, close all
 SAMPLE_RATE = 6400;
 
 %% Get data from CSV
-vibData = readmatrix('../Test Data/2024-02-14_6accelerometersHandShaken.csv');
+vibData = readmatrix('../Test Data/2024-04-03_6accelerometersHandShaken_second.csv');
     % 2024-02-15_17-34-21-ADXL1001-6400Hz-NotHeld-ACpower-DampenerMount.csv
     % 2024-02-14_12-35-51-ADXL1001-6400Hz-NotHeld-ACpower.csv
 xData = vibData(:, 2:7); % Select columns 1 through 6 for vibration data
 N = size(xData, 1);
+
+%% Plot time discrepancies
+figure(6)
+times = vibData(:, 1);
+time_diff = diff(times); % Compute the differences between consecutive time values
+plot(time_diff)
+xlabel('Index')
+ylabel('Time Difference')
+title('Changes between Consecutive Time Values')
 
 %% Plot Voltage over Time
 figure(1)
@@ -18,6 +27,17 @@ legend('Accelerometer 1', 'Accelerometer 2', 'Accelerometer 3', 'Accelerometer 4
 xlabel('Time (seconds)')
 ylabel('Voltage')
 title('Voltage vs Time for Accelerometers')
+
+% Plot vertical dotted lines where time difference is not 156.25
+hold on
+for i = 1:length(time_diff)
+    if abs(time_diff(i) - 156.25) > eps % Check if time difference is not 156.25 within a small tolerance
+        x_line = tData(i+1); % Get the x-coordinate for the line
+        ylims = ylim; % Get the y-axis limits
+        plot([x_line, x_line], ylims, 'k--') % Plot vertical dotted line
+    end
+end
+hold off
 
 %% Plot FFT for each accelerometer
 figure(2)
