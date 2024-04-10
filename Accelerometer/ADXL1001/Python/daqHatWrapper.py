@@ -57,6 +57,7 @@ class daqhatsWrapper:
             rows += 1
             sample_time += time_per_sample
         if (self.debug and (sample_time != startTime)): raise Exception("NOT CALCULATING MID-SAMPLE TIMES CORRECTLY!")
+        data_csv = data_csv.removesuffix("\n")
         self.mprint.p(data_csv, self.outputLog)
     
     """
