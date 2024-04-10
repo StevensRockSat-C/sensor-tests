@@ -28,6 +28,7 @@ class daqhatsWrapper:
         self.fileName = 'AccelerationData.csv'
         self.debug = debug
         self.mprint = mprint
+        self.outputLog = open(self.fileName, 'w') #open file to write to, name it outputLog
 
 
     """
@@ -56,7 +57,7 @@ class daqhatsWrapper:
             rows += 1
             sample_time += time_per_sample
         if (self.debug and (sample_time != startTime)): raise Exception("NOT CALCULATING MID-SAMPLE TIMES CORRECTLY!")
-        self.mprint.p(data_csv, self.fileName)
+        self.mprint.p(data_csv, self.outputLog)
     
     """
     Same as write_data_to_csv, but without timestamps
@@ -69,7 +70,7 @@ class daqhatsWrapper:
                 data_csv += ("," + str(data[rows*numChannels + i]))
             data_csv += "\n"
             rows += 1
-        self.mprint.p(data_csv, self.fileName)
+        self.mprint.p(data_csv, self.outputLog)
     
     """
     Continuously records data from accelerometers to buffer, then calls write_data_to_csv to save data to csv
@@ -94,8 +95,6 @@ class daqhatsWrapper:
             actual_sampling_rate = self.hat.a_in_scan_actual_rate(self.numChannels, self.sampleRate)
             print("Actual sampling rate:", actual_sampling_rate)
 
-        #open file to write to, name it outputLog
-        outputLog = open(self.fileName, 'w')
         
         while True:
             try:                
