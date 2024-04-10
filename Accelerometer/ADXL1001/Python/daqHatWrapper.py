@@ -36,7 +36,6 @@ class daqhatsWrapper:
     Inputs:
         data: data in 1D list 
         numChannels: number of channels daqHat reading from
-        filename: name of file to write data to
         startTime: time started reading data (in microseconds)
     
     Output: 
@@ -57,7 +56,7 @@ class daqhatsWrapper:
             rows += 1
             sample_time += time_per_sample
         if (self.debug and (sample_time != startTime)): raise Exception("NOT CALCULATING MID-SAMPLE TIMES CORRECTLY!")
-        self.mprint.p(data_csv, self.filename)
+        self.mprint.p(data_csv, self.fileName)
     
     """
     Same as write_data_to_csv, but without timestamps
@@ -70,7 +69,7 @@ class daqhatsWrapper:
                 data_csv += ("," + str(data[rows*numChannels + i]))
             data_csv += "\n"
             rows += 1
-        self.mprint.p(data_csv, self.filename)
+        self.mprint.p(data_csv, self.fileName)
     
     """
     Continuously records data from accelerometers to buffer, then calls write_data_to_csv to save data to csv
