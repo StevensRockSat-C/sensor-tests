@@ -118,7 +118,5 @@ Output:
                 self.hat.a_in_scan_cleanup() #cleaning up
                 exit()
         
-outputLog = open("accelerations.csv", 'w') #OVERWRITES OLD FILE
-
-daq = daqhatsWrapper([1,2,3,4,5,6])
+daq = daqhatsWrapper()
 daq.read_write_data()
