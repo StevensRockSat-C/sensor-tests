@@ -1,10 +1,7 @@
-from daqhats import mcc128, OptionFlags, HatIDs, HatError, AnalogInputMode, \
+from daqhats import mcc128, OptionFlags, HatIDs, AnalogInputMode, \
     AnalogInputRange
-from daqhats_utils import select_hat_device, enum_mask_to_string, \
-    chan_list_to_mask
+from daqhats_utils import select_hat_device, chan_list_to_mask
 from time import sleep, time
-from sys import stdout
-from multiprint import MultiPrinter
 
 
 def timeUS():
@@ -43,36 +40,16 @@ class daqhatsWrapper:
         saves data to file given with timestamps in leftmost column 
         using multiprint
     """
-    def write_data_to_csv(self, data, numChannels, startTime):
-        time_per_sample = 156.25 # 1/sampling_rate * (10^6 conversion to microseconds)
-        rows=0
+    def write_data_to_csv(self, data, startTime):
         data_csv = ''
-        
-        sample_time = startTime - (((1.0)*len(data)/numChannels) * time_per_sample) # total samples * time between samples
-        while (len(data)/numChannels > rows):
-            data_csv += str(sample_time)
-            for i in range(numChannels):
-                data_csv += ("," + str(data[rows*numChannels + i]))
-            data_csv += "\n"
-            rows += 1
-            sample_time += time_per_sample
-        if (self.debug and (sample_time != startTime)): raise Exception("NOT CALCULATING MID-SAMPLE TIMES CORRECTLY!")
-        data_csv = data_csv.removesuffix("\n")
-        self.mprint.p(data_csv, self.outputLog)
-    
-    """
-    Same as write_data_to_csv, but without timestamps
-    """
-    def write_data_to_csv_no_times(self, data, numChannels, time=None):
-        data_csv = ''
-        for row in range(int(len(data)/numChannels)):
-            data_csv += ("," if (row != int(len(data)/numChannels) - 1) else (str(time) + ",")) # Only write timestamp to last value
-            for i in range(numChannels):
-                data_csv += (str(data[row*numChannels + i]) + ",")
+        for row in range(len(data)/self.numChannels):
+            data_csv += ("," if (row != int(len(data)/self.numChannels) - 1) else (str(time) + ",")) # Only write timestamp to last value
+            for i in range(self.numChannels):
+                data_csv += ("," + str(data[row*self.numChannels + i]))
             data_csv += "\n"
         data_csv = data_csv.removesuffix("\n")
         self.mprint.p(data_csv, self.outputLog)
-    
+
     """
     Continuously records data from accelerometers to buffer, then calls write_data_to_csv to save data to csv
     
@@ -96,31 +73,27 @@ class daqhatsWrapper:
             actual_sampling_rate = self.hat.a_in_scan_actual_rate(self.numChannels, self.sampleRate)
             print("Actual sampling rate:", actual_sampling_rate)
 
-        
         while True:
             try:                
                 startTime = timeUS()
-                
                 #assign buffer values to sampleData then clear buffer
                 sampleData = self.hat.a_in_scan_read(read_request_size, timeout)
-                
-                #self.write_data_to_csv(sampleData.data, self.numChannels, startTime)
-                self.write_data_to_csv_no_times(sampleData.data, self.numChannels)
+                self.write_data_to_csv(sampleData.data, startTime)
+
                 sleep(0.1)
             except KeyboardInterrupt:
                 sampleStartTime = timeUS()
                 sampleData= self.hat.a_in_scan_read(read_request_size, timeout) #get last values
-                #self.write_data_to_csv(sampleData.data, self.numChannels, sampleStartTime)
-                self.write_data_to_csv_no_times(sampleData.data, self.numChannels)
+                self.write_data_to_csv(sampleData.data, sampleStartTime)
                 
                 #closing all files/scans
-                outputLog.close()
+                self.outputLog.close()
                 self.hat.a_in_scan_stop() #stopping continuous scan
                 self.hat.a_in_scan_cleanup() #cleaning up
                 exit()
  
         
 #initialize multiprinter as mprint
-mprint = MultiPrinter()
-daq = daqhatsWrapper(mprint, debug=True)
-daq.read_write_data()
+#mprint = MultiPrinter()
+#daq = daqhatsWrapper(mprint, debug=True)
+#daq.read_write_data()
