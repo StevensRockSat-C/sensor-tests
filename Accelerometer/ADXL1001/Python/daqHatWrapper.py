@@ -63,14 +63,13 @@ class daqhatsWrapper:
     """
     Same as write_data_to_csv, but without timestamps
     """
-    def write_data_to_csv_no_times(self, data, numChannels):
-        rows=0
+    def write_data_to_csv_no_times(self, data, numChannels, time=None):
         data_csv = ''
-        while (len(data)/numChannels > rows):
+        for row in range(int(len(data)/numChannels)):
+            data_csv += ("," if (row != int(len(data)/numChannels) - 1) else (str(time) + ",")) # Only write timestamp to last value
             for i in range(numChannels):
-                data_csv += (str(data[rows*numChannels + i]) + ",")
+                data_csv += (str(data[row*numChannels + i]) + ",")
             data_csv += "\n"
-            rows += 1
         data_csv = data_csv.removesuffix("\n")
         self.mprint.p(data_csv, self.outputLog)
     
