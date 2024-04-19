@@ -2,13 +2,17 @@ import sys
 import os
 
 class MultiPrinter:
+    """
+    Class to print to both a file and the console.
+    
+    Optimizes write times and ensures the file is flushed to the microSD.
+    """
     
     def __init__(self):
         self.ready = True
     
     def p(self, message, f):
         """
-        
         Print to both the screen and a specified file.
         
         message:    The message to print and write
@@ -20,10 +24,11 @@ class MultiPrinter:
             
     def w(self, message, f):
         """
-        Only write and flush to the file
+        Only write and flush to the file.
+
+        This process should take roughly 1 ms / 1 KB written. f.flush and
+        os.fsync should have execution times in the order of microseconds.
         """
-        
-        # This process should take roughly 1 ms / 1 KB written. f.flush and os.fsync should have execution times in the order of microseconds.
         try:
             f.write(message + "\n") # File.write doesn't automatically add a newline
             f.flush()               # Flush the data to the file
@@ -33,6 +38,8 @@ class MultiPrinter:
             
     def pform(self, message, tPlus, f):
         """
+        Print and write to a file, formatting a tPlus value at the beginning.
+        
         message:    The message to print and write
         tPlus:      The mission tPlus
         f:          The file to write to
