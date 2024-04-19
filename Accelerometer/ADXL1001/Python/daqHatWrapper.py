@@ -24,8 +24,21 @@ class daqhatsWrapper:
         self.overrun = False
         self.outputLog = open(self.fileName, 'w') #open file to write to, name it outputLog
         self.connected = False
+        self.connectionAttempts = 0
         
-        
+        self.connect_to_MCC()
+
+    def __connect_to_MCC(self):
+        """
+        Attempt to connect to the MCC. Try-except protected.
+
+        Returns
+        -------
+        Boolean
+            Whether we are connected to the MCC128.
+
+        """
+        self.connectionAttempts += 1
         try:
             self.hat = mcc128(self.address)
             self.address = select_hat_device(HatIDs.MCC_128)
@@ -35,7 +48,24 @@ class daqhatsWrapper:
             self.hat.a_in_scan_start(self.channelList, self.samples_per_channel, self.sampleRate, OptionFlags.CONTINUOUS)
             self.connected = True
         except:
+            self.connected = False
             self.mprint.p("FAILED TO CONNECT TO MCC128!! Time: " + str(timeMS()) + " ms")
+        return self.connected
+    
+    
+    def close(self):
+        """
+        Close the log and the connection to the MCC128.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.outputLog.close()
+        self.hat.a_in_scan_stop() #stopping continuous scan
+        self.hat.a_in_scan_cleanup() #cleaning up
+
 
     def __write_data_to_csv(self, data, endTime):
         """
@@ -71,31 +101,25 @@ class daqhatsWrapper:
         Returns
         -------
         Whether the buffer has overrun.
-
         """
         read_request_size = -1      #read all available in buffer
         timeout = 0     # Use 0 timeout to immediately read the buffer's contents, instead of waiting for it to fill.
         
-        buffer_data = self.hat.a_in_scan_read(read_request_size, timeout)
-        self.__write_data_to_csv(buffer_data.data, endTime)
-        
-        if (buffer_data.hardware_overrun | buffer_data.buffer_overrun):
-                    self.overrun = True
-        return self.overrun
+        if not self.connected:
+            self.connect_to_MCC()
+            if not self.connected: return False
+            
+        try:
+            buffer_data = self.hat.a_in_scan_read(read_request_size, timeout)
+            self.__write_data_to_csv(buffer_data.data, endTime)
+            
+            if (buffer_data.hardware_overrun | buffer_data.buffer_overrun):
+                        self.overrun = True
+            return self.overrun
+        except:
+            self.mprint.p("WAS CONNECTED TO MCC128 BUT CAN'T GET DATA!! Time: " + str(timeMS()) + " ms")
+            self.connected = False
     
-    def close(self):
-        """
-        Close the log and the connection to the MCC128.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.outputLog.close()
-        self.hat.a_in_scan_stop() #stopping continuous scan
-        self.hat.a_in_scan_cleanup() #cleaning up
-
     def read_write_data(self):
         """
         Continuously records data from accelerometers to buffer, then calls write_data_to_csv to save data to csv.
