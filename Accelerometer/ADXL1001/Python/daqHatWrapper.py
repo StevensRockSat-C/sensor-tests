@@ -12,7 +12,7 @@ class daqhatsWrapper:
     """Wrap the DAQHAT library for ease of use."""
     
     #hat-id for 128 is 326, according to the library reference
-    def __init__(self, mprint, chanList=[1,2,3,4,5,6], debug=False, hat_id=326, sampleRate=6400): #open port/channel
+    def __init__(self, mprint, chanList=[0,1,2,4,5,6], debug=False, hat_id=326, sampleRate=6400): #open port/channel
         self.hat_id = hat_id
         self.sampleRate = sampleRate #with 6400 samples, can do 10 kS
         self.samples_per_channel = 0
