@@ -40,8 +40,8 @@ class daqhatsWrapper:
         """
         self.connectionAttempts += 1
         try:
-            self.hat = mcc128(self.address)
             self.address = select_hat_device(HatIDs.MCC_128)
+            self.hat = mcc128(self.address)
             
             self.hat.a_in_mode_write(AnalogInputMode.SE)
             self.hat.a_in_range_write(AnalogInputRange.BIP_5V)
