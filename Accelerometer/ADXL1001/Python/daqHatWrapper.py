@@ -119,6 +119,7 @@ class daqhatsWrapper:
         except:
             self.mprint.p("WAS CONNECTED TO MCC128 BUT CAN'T GET DATA!! Time: " + str(timeMS()) + " ms")
             self.connected = False
+            return False
     
     def read_write_data(self):
         """
