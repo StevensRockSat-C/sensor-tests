@@ -15,3 +15,6 @@ GPIO.add_event_detect(GSWITCH_PIN, GPIO.FALLING,
 
 def gswitch_callback(channel, pin):
     print("Pressed: " + str(timeMS()))
+
+while(True):
+    pass
